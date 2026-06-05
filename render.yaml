@@ -1,0 +1,21 @@
+services:
+  - type: cron
+    name: parking-bot-cron
+    env: python
+    plan: starter
+    schedule: "50 7 * * 1-5"
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m playwright install --with-deps chromium
+    startCommand: python parking_bot.py --headless --non-interactive
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: PARKING_USERNAME
+        sync: false
+      - key: PARKING_PASSWORD
+        sync: false
+      - key: PARKING_DATE
+        sync: false
+      - key: TZ
+        value: Asia/Taipei
