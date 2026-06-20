@@ -352,6 +352,9 @@ def ask_credentials(non_interactive: bool = False) -> None:
 
     # tkinter 不可用時，直接改用 CLI 輸入
     if tk is None or messagebox is None:
+        if not sys.stdin.isatty():
+            log("無可用終端機且缺少環境變數憑證，無法繼續", "ERROR")
+            sys.exit(2)
         username = username or input("請輸入員工編號: ").strip()
         if not username:
             print("未輸入員工編號，程式結束。")
@@ -421,8 +424,10 @@ def ask_credentials(non_interactive: bool = False) -> None:
         CONFIG["password"] = password_var.get()
         
     except Exception as e:
-        # 🔴 [修復] 如果 GUI 初始化失敗（例如無 X11），改用控制台輸入
         log(f"GUI 初始化失敗 ({e})，改用控制台輸入", "WARN")
+        if not sys.stdin.isatty():
+            log("無可用終端機且缺少環境變數憑證，無法繼續", "ERROR")
+            sys.exit(2)
         username = username or input("請輸入員工編號: ").strip()
         if not username:
             print("未輸入員工編號，程式結束。")
